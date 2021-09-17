@@ -2,7 +2,7 @@
 setMethod(f="detectPeaks",
           signature=signature(object="MassSpectrum"),
           definition=function(object, halfWindowSize=20L,
-                              method=c("MAD", "SuperSmoother"), SNR=2L, ...) {
+                              method=c("MAD", "SuperSmoother"), SNR=2L, addMAD=FALSE ,...) {
 
   ## empty spectrum?
   if (.isEmptyWarning(object)) {
@@ -16,9 +16,13 @@ setMethod(f="detectPeaks",
   ## find local maxima
   isLocalMaxima <- .findLocalMaximaLogical(object,
                                            halfWindowSize=halfWindowSize)
+  ## CZ_minimum intensity MAD
+            if (addMAD==TRUE){
+              minimum <- mad(object@intensity)
+            } else {minimum = 0}
 
   ## include only local maxima which are above the noise
-  isAboveNoise <- object@intensity > (SNR * noise)
+  isAboveNoise <- object@intensity > (SNR * noise+minimum)
 
   peakIdx <- which(isAboveNoise & isLocalMaxima)
 
