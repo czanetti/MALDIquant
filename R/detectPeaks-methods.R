@@ -21,8 +21,8 @@ setMethod(f="detectPeaks",
               minimum <- mad(object@intensity)
             } else {minimum = 0}
 
-  ## include only local maxima which are above the noise
-  isAboveNoise <- object@intensity > (SNR * noise+minimum)
+  ## include only local maxima which are above the noise (and also minimum, if specified)
+  isAboveNoise <- object@intensity > (SNR * noise) & object@intensity > minimum
 
   peakIdx <- which(isAboveNoise & isLocalMaxima)
 
